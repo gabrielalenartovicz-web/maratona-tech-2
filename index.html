@@ -62,7 +62,6 @@
             display: flex;
             justify-content: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            sticky: top;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -315,3 +314,117 @@
             
             <ul>
                 <li><strong>Verifique sempre:</strong> Cheque a fonte, a data e a autoria antes de repassar qualquer notícia.</li>
+                <li><strong>Não exponha:</strong> Nunca divulgue fotos ou filmagens de propriedades vizinhas ou funcionários sem autorização prévia.</li>
+                <li><strong>Educação Digital:</strong> Promova palestras, cartilhas e dinâmicas nas comunidades e escolas agrícolas.</li>
+            </ul>
+
+            <h3 style="margin-top:20px; color: var(--secondary);">Mensagem Final da Equipe</h3>
+            <p style="font-style: italic; font-size: 1.2rem; text-align: center; background: #f0fdf4; padding: 15px; border-radius: 6px;">
+                "Antes de compartilhar: Pare, pense e verifique!"
+            </p>
+        </div>
+
+        <!-- ABA 4: PERGUNTAS (QUIZ) -->
+        <div id="perguntas" class="tab-content">
+            <h2>Módulo Interativo: Campanha de Combate aos Erros</h2>
+            <p>Responda às perguntas abaixo para testar seus conhecimentos e identificar boatos sobre tecnologias no campo. O sistema validará se sua resposta está correta imediatamente!</p>
+            
+            <div class="question-card" id="q1">
+                <p class="question-text">1. De acordo com o projeto, qual é a principal causa-raiz para o espalhamento do boato dos drones?</p>
+                <div class="options-container">
+                    <button class="option-btn" onclick="checkAnswer(this, false, 'A principal causa-raiz identificada foi a falta de verificação antes de compartilhar.')">A) Mau funcionamento mecânico dos drones.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, true, 'Correto! A falta de verificação permite o avanço rápido das Fake News.')">B) A falta de verificação das informações antes de compartilhá-las.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, false, 'Incorreto. A IA pode ser usada, mas a negligência na checagem é o fator principal.')">C) O uso exclusivo de inteligência artificial avançada pelas fazendas.</button>
+                </div>
+                <div class="feedback-text"></div>
+            </div>
+
+            <div class="question-card" id="q2">
+                <p class="question-text">2. Qual impacto social é gerado quando produtores recusam novas tecnologias por medo de boatos?</p>
+                <div class="options-container">
+                    <button class="option-btn" onclick="checkAnswer(this, false, 'Incorreto. O impacto emocional envolve medo/ansiedade direta.')">A) Impacto Emocional.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, true, 'Correto! Recusar tecnologia por desconfiança atrasa o setor e gera prejuízo econômico.')">B) Impacto Econômico.</button>
+                    <button class="option-btn" onclick="checkAnswer(this, false, 'Incorreto. Embora confunda, a rejeição financeira caracteriza perda de mercado.')">C) Impacto Ambiental.</button>
+                </div>
+                <div class="feedback-text"></div>
+            </div>
+
+            <div class="question-card" id="q3">
+                <p class="question-text">3. Quais são as três perguntas de ouro recomendadas pela equipe antes de compartilhar uma mensagem?</p>
+                <div class="options-container">
+                    <button class="option-btn" onclick="checkAnswer(this, false, 'Incorreto. O preço e o modelo do drone não ajudam a checar a veracidade do boato.')">A) Qual o preço do drone? Quem é o fabricante? Ele filma em HD?</button>
+                    <button class="option-btn" onclick="checkAnswer(this, false, 'Incorreto. Essas perguntas não validam a segurança da informação.')">B) O vizinho tem internet? A plantação é grande? Quantos robôs existem lá?</button>
+                    <button class="option-btn" onclick="checkAnswer(this, true, 'Correto! Avaliar o autor, as provas e o respeito à privacidade impede a desinformação.')">C) Quem publicou? Existem provas e outras fontes? Respeita a privacidade?</button>
+                </div>
+                <div class="feedback-text"></div>
+            </div>
+
+            <div class="score-box" id="score-display">
+                Respostas Corretas: <span id="correct-count">0</span> de 3
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 - Projeto Desenvolvido pela Equipe "Código da Roça" - CEEP Agrícola</p>
+        <p style="font-size: 0.8rem; margin-top: 5px;">Referências oficiais: ANPD | ANAC | Gov.br</p>
+    </footer>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+            
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            
+            document.getElementById(tabName).style.display = "block";
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        let answeredQuestions = new Set();
+        let correctAnswersCount = 0;
+
+        function checkAnswer(button, isCorrect, feedbackMessage) {
+            const questionCard = button.closest('.question-card');
+            const questionId = questionCard.id;
+
+            if (answeredQuestions.has(questionId)) {
+                return;
+            }
+
+            const buttons = questionCard.querySelectorAll('.option-btn');
+            buttons.forEach(btn => btn.setAttribute('disabled', 'true'));
+
+            const feedbackDiv = questionCard.querySelector('.feedback-text');
+            feedbackDiv.textContent = feedbackMessage;
+
+            if (isCorrect) {
+                button.classList.add('correct');
+                feedbackDiv.classList.add('correct');
+                correctAnswersCount++;
+            } else {
+                button.classList.add('incorrect');
+                feedbackDiv.classList.add('incorrect');
+                
+                buttons.forEach(btn => {
+                    if(btn.getAttribute('onclick').includes('true')) {
+                        btn.classList.add('correct');
+                    }
+                });
+            }
+
+            answeredQuestions.add(questionId);
+            document.getElementById('correct-count').textContent = correctAnswersCount;
+        }
+    </script>
+</body>
+</html>
